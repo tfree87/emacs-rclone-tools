@@ -27,6 +27,9 @@
 ;;; Code:
 
 
+(defvar rclone-show-progress ()
+  "Whether to show progress when running rclone commands.")
+
 (defvar rclone-commands '(bisync copy sync)
   "A list of rclone commands available for use.")
 
@@ -62,7 +65,7 @@
   (let ((command (or command (rclone-get-command)))
         (local-directory (or local-directory (rclone-get-local-directory)))
         (remote (or remote (rclone-get-remote))))
-    (message
+    (eshell-command
      (concat "rclone -vP "
              command
              " "
@@ -76,7 +79,7 @@
   (let ((command (or command (rclone-get-command)))
         (local-directory (or local-directory (rclone-get-local-directory)))
         (remote (or remote (rclone-get-remote))))
-    (message
+    (eshell-command
      (concat "rclone -vP "
              command
              " "
