@@ -30,7 +30,6 @@
 (defgroup rclone-tools nil
   "Customization options for the rclone-tools package")
 
-
 (defcustom rclone-config-file nil
   "The locaton of the rclone configuration file."
   :type '(string)
@@ -79,6 +78,8 @@
       (format "--config %s" rclone-config-file)
     (format "")))
 
+
+
 ;;;###autoload
 
 (defun rclone-run-remote-to-local (&optional command local-directory remote)
@@ -108,3 +109,5 @@
              command
              local-directory
              remote))))
+
+(provide 'rclone-tools)
