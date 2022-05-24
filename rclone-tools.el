@@ -27,8 +27,24 @@
 ;;; Code:
 
 
-(defvar rclone-show-progress ()
-  "Whether to show progress when running rclone commands.")
+(defgroup rclone-tools nil
+  "Customization options for the rclone-tools package")
+
+
+(defcustom rclone-config-file nil
+  "The locaton of the rclone configuration file."
+  :type '(string)
+  :group 'rclone-tools)
+
+(defcustom rclone-show-progress t
+  "Whether to show progress when running rclone commands."
+  :type '(boolean)
+  :group 'rclone-tools)
+
+(defcustom rclone-path (executable-find "rclone")
+  "The location of the rclone exectable file."
+  :type '(string)
+  :group 'rclone-tools)
 
 (defvar rclone-commands '(bisync copy sync)
   "A list of rclone commands available for use.")
@@ -57,6 +73,12 @@
 (defun rclone-get-local-directory ()
   (read-file-name "Local directory: "))
 
+(defun rclone-config-option ()
+  "Return an option telling rclone where to find the config file."
+  (if (bound-and-true-p rclone-config-file)
+      (format "--config %s" rclone-config-file)
+    (format "")))
+
 ;;;###autoload
 
 (defun rclone-run-remote-to-local (&optional command local-directory remote)
@@ -66,11 +88,11 @@
         (local-directory (or local-directory (rclone-get-local-directory)))
         (remote (or remote (rclone-get-remote))))
     (eshell-command
-     (concat "rclone -vP "
+     (format "%s %s -vP %s %s %s"
+             rclone-path
+             (rclone-config-option)
              command
-             " "
              remote
-             " "
              local-directory))))
 
 (defun rclone-run-local-to-remote (&optional command local-directory remote)
@@ -80,9 +102,9 @@
         (local-directory (or local-directory (rclone-get-local-directory)))
         (remote (or remote (rclone-get-remote))))
     (eshell-command
-     (concat "rclone -vP "
+     (format "%s %s -vP %s %s %s"
+             rclone-path
+             (rclone-config-option)
              command
-             " "
              local-directory
-             " "
              remote))))
